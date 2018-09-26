@@ -67,7 +67,6 @@ class HyperView(View):
 
         return HttpResponse(body, content_type=mimetype)
 
-
     def put(self, request, *args, **kwargs):
         base_url = 'http://' + request.get_host()
 
@@ -77,18 +76,32 @@ class HyperView(View):
         graph = Graph('Hyperdjango', identifier=URIRef(base_url))
         graph.open(configuration=self.models.__name__)
 
-        r = graph.update('''
+        graph.update('''
         DELETE { ?x ?p ?y }
         WHERE {
             ?x ?p ?y .
         }
         ''', initBindings={'x': URIRef(base_url + request.path)})
 
-        print('INSERT')
-        r = graph.update('''
+        graph.update('''
         INSERT DATA {
         ''' + update_graph.serialize(format='nt').decode('utf8') + '''
         }
         ''', initBindings={'x': URIRef(base_url + request.path)})
 
         return self.get(request, *args, **kwargs)
+
+    def delete(self, request, *args, **kwargs):
+        base_url = 'http://' + request.get_host()
+
+        graph = Graph('Hyperdjango', identifier=URIRef(base_url))
+        graph.open(configuration=self.models.__name__)
+
+        graph.update('''
+        DELETE { ?x ?p ?y }
+        WHERE {
+            ?x ?p ?y .
+        }
+        ''', initBindings={'x': URIRef(base_url + request.path)})
+
+        return HttpResponse(status=201)

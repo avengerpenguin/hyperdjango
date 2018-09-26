@@ -88,7 +88,6 @@ class HyperdjangoStore(rdflib.store.Store, LoggingMixIn):
                 else:
                     raise NotImplementedError
 
-
     def _get_model(self, s):
         path = yarl.URL(s).path
         for n in dir(self.models):

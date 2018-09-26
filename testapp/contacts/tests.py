@@ -38,3 +38,18 @@ def test_put(client):
 
     assert response.status_code == 200
     assert json.loads(response.content)['name'] == 'Ron'
+
+
+@pytest.mark.django_db
+def test_delete(client):
+    me = Person(name='Ross')
+    me.save()
+    response = client.get('/people/1')
+    assert response.status_code == 200
+    assert json.loads(response.content)['name'] == 'Ross'
+
+    response = client.delete('/people/1')
+    assert response.status_code == 201
+
+    response = client.get('/people/1')
+    assert response.status_code == 404
