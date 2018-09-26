@@ -32,25 +32,21 @@ class HyperdjangoStore(rdflib.store.Store, LoggingMixIn):
         if not s:
             raise Exception('Inefficient')
         else:
-            path = yarl.URL(s).path
-            for n in dir(self.models):
-                model = getattr(self.models, n)
-                if isinstance(model, django.db.models.base.ModelBase):
-                    if model.uri_pattern:
-                        match = model.uri_pattern.match(path)
-                        if match:
-                            try:
-                                obj = model.objects.get(pk=match.group(1))
-                            except model.DoesNotExist:
-                                return []
-                            
-                            g = Graph()
-                            uri = URIRef(path)
-                            yield (uri, rdflib.RDF.type, base['/' + model.__name__]), None
-                            
-                            for prop in obj.__dict__:
-                                if prop not in ['_state', 'id']:
-                                    yield (uri, base['/' + prop], rdflib.Literal(getattr(obj, prop))), None
+            model_id = self._get_model(s)
+            if model_id:
+                model, pk = model_id
+                try:
+                    obj = model.objects.get(pk=pk)
+                except model.DoesNotExist:
+                    return []
+
+                uri = URIRef(yarl.URL(s).path)
+                yield (uri, rdflib.RDF.type, base['/' + model.__name__]), None
+
+                for prop in obj.__dict__:
+                    if prop not in ['_state', 'id']:
+                        yield (uri, base['/' + prop],
+                               rdflib.Literal(getattr(obj, prop))), None
 
     def addN(self, quads):
         data = defaultdict(dict)
@@ -60,42 +56,45 @@ class HyperdjangoStore(rdflib.store.Store, LoggingMixIn):
             data[s][p] = o
 
         for s in data:
-            path = yarl.URL(s).path
-            for n in dir(self.models):
-                model = getattr(self.models, n)
-                if isinstance(model, django.db.models.base.ModelBase):
-                    if model.uri_pattern:
-                        match = model.uri_pattern.match(path)
-                        if match:
-                            try:
-                                obj = model.objects.get(pk=match.group(1))
-                            except model.DoesNotExist:
-                                obj = model(pk=match.group(1))
+            model_id = self._get_model(s)
+            if model_id:
+                model, pk = model_id
+                try:
+                    obj = model.objects.get(pk=pk)
+                except model.DoesNotExist:
+                    obj = model(pk=pk)
 
-                            for p, o in data[s].items():
-                                prop = p.split('/')[-1]
-                                setattr(obj, prop, o.toPython())
+                for p, o in data[s].items():
+                    prop = p.split('/')[-1]
+                    setattr(obj, prop, o.toPython())
 
-                            obj.save()
+                obj.save()
 
     def remove(self, t, context=None):
         s, p, o = t
         if not s:
             raise Exception('Inefficient')
         else:
-            path = yarl.URL(s).path
-            for n in dir(self.models):
-                model = getattr(self.models, n)
-                if isinstance(model, django.db.models.base.ModelBase):
-                    if model.uri_pattern:
-                        match = model.uri_pattern.match(path)
-                        if match:
-                            try:
-                                obj = model.objects.get(pk=match.group(1))
-                            except model.DoesNotExist:
-                                return
+            model_id = self._get_model(s)
+            if model_id:
+                model, pk = model_id
+                try:
+                    obj = model.objects.get(pk=pk)
+                except model.DoesNotExist:
+                    return
 
-                            if True or p == RDF.type:
-                                obj.delete()
-                            else:
-                                raise NotImplementedError
+                if True or p == RDF.type:
+                    obj.delete()
+                else:
+                    raise NotImplementedError
+
+
+    def _get_model(self, s):
+        path = yarl.URL(s).path
+        for n in dir(self.models):
+            model = getattr(self.models, n)
+            if isinstance(model, django.db.models.base.ModelBase):
+                if model.uri_pattern:
+                    match = model.uri_pattern.match(path)
+                    if match:
+                        return model, match.group(1)
