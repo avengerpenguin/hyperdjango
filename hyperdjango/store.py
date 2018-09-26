@@ -53,15 +53,11 @@ class HyperdjangoStore(rdflib.store.Store, LoggingMixIn):
                                     yield (uri, base['/' + prop], rdflib.Literal(getattr(obj, prop))), None
 
     def addN(self, quads):
-        #print('Quads: {}'.format(list(quads)))
-
         data = defaultdict(dict)
         
         for s, p, o, _ in quads:
             print(s, p, o)
             data[s][p] = o
-
-        print(dict(data))
 
         for s in data:
             path = yarl.URL(s).path
@@ -81,14 +77,8 @@ class HyperdjangoStore(rdflib.store.Store, LoggingMixIn):
                                 setattr(obj, prop, o.toPython())
 
                             obj.save()
-                            print(obj)
-                            print(list(model.objects.all())[0].name)
-                
-            
-        
-                                    
+
     def remove(self, t, context=None):
-        base = Namespace(context.identifier)
         s, p, o = t
         if not s:
             raise Exception('Inefficient')
