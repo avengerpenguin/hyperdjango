@@ -15,30 +15,8 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, re_path
-
 import hyperdjango
-import rdflib
-
 from contacts import models
-
-
-def model2graph(model, base_url):
-    base = rdflib.Namespace(base_url)
-    g = rdflib.Graph()
-
-    for obj in model.objects.all():
-        uri = base['/people' + '/' + str(obj.pk)]
-        g.add((uri, rdflib.RDF.type, base['/' + model.__name__]))
-
-        for prop in obj.__dict__:
-            if prop not in ['_state', 'id']:
-                g.add((uri, base['/' + prop], rdflib.Literal(getattr(obj, prop))))
-
-    return g
-
-
-def graph_factory(base_url):
-    return model2graph(models.Person, base_url)
 
 
 urlpatterns = [

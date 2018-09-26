@@ -27,8 +27,6 @@ def test_put(client):
     assert response.status_code == 200
     assert json.loads(response.content)['name'] == 'Ross'
 
-    print(json.loads(response.content))
-    
     response = client.put('/people/1', data=json.dumps({
         '@context': {
             '@vocab': 'http://testserver/', '@base': 'http://testserver'
