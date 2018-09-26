@@ -44,7 +44,8 @@ class HyperView(View):
         for r_ in r:
             g.add(r_)
 
-        mimetype, rdf_format = FORMAT.decide(request.META.get('HTTP_ACCEPT', 'application/ld+json'), g.context_aware)
+        mimetype, rdf_format = FORMAT.decide(request.META.get(
+            'HTTP_ACCEPT', 'application/ld+json'), g.context_aware)
 
         body = g.serialize(format=rdf_format, publicID=base_url)
 
@@ -71,7 +72,8 @@ class HyperView(View):
         base_url = 'http://' + request.get_host()
 
         update_graph = Graph()
-        update_graph.parse(data=request.body, format=request.META['CONTENT_TYPE'])
+        update_graph.parse(
+            data=request.body, format=request.META['CONTENT_TYPE'])
 
         graph = Graph('Hyperdjango', identifier=URIRef(base_url))
         graph.open(configuration=self.models.__name__)
