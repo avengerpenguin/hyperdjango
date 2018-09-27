@@ -3,7 +3,7 @@ import yarl
 import django
 import rdflib
 from collections import defaultdict
-from rdflib import Graph, URIRef, RDF, Namespace
+from rdflib import URIRef, RDF, Namespace
 
 
 class LoggingMixIn(object):
