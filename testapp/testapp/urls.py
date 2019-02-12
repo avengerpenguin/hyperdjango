@@ -16,7 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, re_path
 import hyperdjango
-from contacts import models
+from dyli import models
 
 
 urlpatterns = [

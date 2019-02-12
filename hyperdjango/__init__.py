@@ -107,3 +107,6 @@ class HyperView(View):
         ''', initBindings={'x': URIRef(base_url + request.path)})
 
         return HttpResponse(status=201)
+
+
+

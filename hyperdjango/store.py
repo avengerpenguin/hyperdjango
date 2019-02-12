@@ -18,7 +18,7 @@ class LoggingMixIn(object):
         return attr
 
 
-class HyperdjangoStore(rdflib.store.Store, LoggingMixIn):
+class HyperdjangoStore(rdflib.store.Store):
 
     models = None
 
@@ -52,7 +52,6 @@ class HyperdjangoStore(rdflib.store.Store, LoggingMixIn):
         data = defaultdict(dict)
         
         for s, p, o, _ in quads:
-            print(s, p, o)
             data[s][p] = o
 
         for s in data:

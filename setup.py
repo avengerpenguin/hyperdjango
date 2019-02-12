@@ -9,7 +9,7 @@ setup(
     author_email='github@rossfenning.co.uk',
     description='hyperdjango',
     url='http://github.com/avengerpenguin/hyperdjango',
-    install_requires=[],
+    install_requires=['django', 'inflect'],
     setup_requires=['pytest-runner',],
     tests_require=['pytest', 'pytest-cov', 'pytest-xdist'],
     packages=['hyperdjango'],

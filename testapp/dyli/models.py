@@ -1,7 +1,7 @@
 import re
 from django.db import models
+from hyperdjango.models import HyperModel
 
 
-class Person(models.Model):
-    uri_pattern = re.compile('/people/(.+)')
+class Thing(HyperModel):
     name = models.CharField(max_length=256)
