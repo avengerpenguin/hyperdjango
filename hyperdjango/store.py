@@ -50,7 +50,7 @@ class HyperdjangoStore(rdflib.store.Store):
 
     def addN(self, quads):
         data = defaultdict(dict)
-        
+
         for s, p, o, _ in quads:
             data[s][p] = o
 

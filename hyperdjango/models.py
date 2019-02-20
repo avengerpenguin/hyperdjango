@@ -20,4 +20,5 @@ class HyperModel(models.Model):
 
     @classproperty
     def uri_pattern(cls):
-        return re.compile('^/{}/([^/]+)$'.format(p.plural(cls.__name__.lower())))
+        return re.compile(
+            '^/{}/([^/]+)$'.format(p.plural(cls.__name__.lower())))

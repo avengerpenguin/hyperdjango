@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 """
 
 import os
+import django12factor
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -75,18 +76,13 @@ WSGI_APPLICATION = 'testapp.wsgi.application'
 # https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
+    {'NAME': 'django.contrib.auth.password_validation.{}'.format(v)}
+    for v in [
+            'UserAttributeSimilarityValiator',
+            'MinimumLengthValidator',
+            'CommonPasswordValidator',
+            'NumericPasswordValidator'
+    ]
 ]
 
 
@@ -110,12 +106,13 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 
-import django12factor
 globals().update(django12factor.factorise())
 
-if not 'SECRET_KEY' in globals():
-    import random
-    SECRET_KEY = ''.join([random.SystemRandom().choice('abcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*(-_=+)') for i in range(50)])
 
-print('GLOBALS')
-print(globals())
+if 'SECRET_KEY' not in globals():
+    import random
+    SECRET_KEY = ''.join(
+        [random.SystemRandom().choice(
+            'abcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*(-_=+)'
+        ) for i in range(50)]
+    )

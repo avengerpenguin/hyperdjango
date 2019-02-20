@@ -1,13 +1,8 @@
 import re
-import json
 import pytest
 import httpretty
-import hyperspace
-from django.test import TestCase
 from rdflib import Graph, Namespace
-
 from .models import Thing
-import hyperspace
 from laconia import ThingFactory
 
 
@@ -31,7 +26,9 @@ def mock_requests_to_use_django_test_client(request, client):
     def put_callback(http_request, uri, headers):
 
         httpretty.disable()
-        r = client.put(uri, data=http_request.body, headers=dict(http_request.headers))
+        r = client.put(uri,
+                       data=http_request.body,
+                       headers=dict(http_request.headers))
 
         response_headers = {
             'content-type': r.headers['Content-Type'],
@@ -42,8 +39,12 @@ def mock_requests_to_use_django_test_client(request, client):
         httpretty.enable()
         return int(r.status_code), response_headers, r.data
 
-    httpretty.register_uri(httpretty.GET, re.compile('http://example.com/.*'), body=get_callback)
-    httpretty.register_uri(httpretty.PUT, re.compile('http://example.com/.*'), body=put_callback)
+    httpretty.register_uri(httpretty.GET,
+                           re.compile('http://example.com/.*'),
+                           body=get_callback)
+    httpretty.register_uri(httpretty.PUT,
+                           re.compile('http://example.com/.*'),
+                           body=put_callback)
     httpretty.enable()
 
     request.addfinalizer(httpretty.disable)
@@ -66,11 +67,3 @@ def test_thing_title(client):
     entity = ThingFactory(g)(Namespace('http://testserver/')['things/1'])
 
     assert 'Berlin' in set(entity.test_name)
-
-
-#@pytest.mark.django_db
-# def test_like_thing(client):
-#     thing = Thing(name='Tree')
-#     thing.save()
-#
-#     response = client.get('/things/1')

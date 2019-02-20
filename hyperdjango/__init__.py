@@ -38,7 +38,7 @@ class HyperView(View):
 
         if len(r) == 0:
             return HttpResponse(status=404)
-        
+
         g = Graph()
 
         for r_ in r:
@@ -107,6 +107,3 @@ class HyperView(View):
         ''', initBindings={'x': URIRef(base_url + request.path)})
 
         return HttpResponse(status=201)
-
-
-
