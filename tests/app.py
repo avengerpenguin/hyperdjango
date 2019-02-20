@@ -6,7 +6,6 @@ from django.conf import settings
 import django12factor
 
 
-
 settings.configure(
     ROOT_URLCONF=__name__,
     MIDDLEWARE_CLASSES=(
@@ -17,9 +16,11 @@ settings.configure(
     **django12factor.factorise()
 )
 
+
 from django.conf.urls import url
 from django.core.wsgi import get_wsgi_application
 from django.http import HttpResponse
+
 
 
 def index(request):

@@ -4,7 +4,7 @@ python:
   - "3.6"
   - "3.7-dev"
 install:
-  - pip install . pytest-django pytest-env django12factor
+  - pip install . pytest-django pytest-env django12factor pylama
 script:
   - pytest
-
+  - pylama
