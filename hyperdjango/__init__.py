@@ -47,7 +47,7 @@ class HyperView(View):
         mimetype, rdf_format = FORMAT.decide(request.META.get(
             'HTTP_ACCEPT', 'application/ld+json'), g.context_aware)
 
-        body = g.serialize(format=rdf_format, publicID=base_url)
+        body = g.serialize(format=rdf_format, publicID=base_url).decode('utf8')
 
         if rdf_format == 'json-ld':
             body = json.dumps(

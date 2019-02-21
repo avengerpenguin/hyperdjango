@@ -9,6 +9,8 @@ setup(
     author_email='github@rossfenning.co.uk',
     description='hyperdjango',
     url='http://github.com/avengerpenguin/hyperdjango',
-    install_requires=['django', 'inflect'],
+    install_requires=[
+        'django', 'inflect', 'rdflib', 'rdflib-jsonld', 'flask_rdf', 'pyld', 'yarl',
+    ],
     packages=['hyperdjango'],
 )

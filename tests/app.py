@@ -1,27 +1,14 @@
-from django.conf import settings
-import django12factor
-from django.conf.urls import url
+import django
+from django.conf.urls import url, re_path
 from django.core.wsgi import get_wsgi_application
 from django.http import HttpResponse
+import hyperdjango
 
 
-settings.configure(
-    ROOT_URLCONF=__name__,
-    MIDDLEWARE_CLASSES=(
-        'django.middleware.common.CommonMiddleware',
-        'django.middleware.csrf.CsrfViewMiddleware',
-        'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    ),
-    **django12factor.factorise()
-)
-
-
-def index(request):
-    return HttpResponse('Hello World')
-
-
+from . import models
+    
 urlpatterns = (
-    url(r'^$', index),
+    re_path('.*', hyperdjango.HyperView.as_view(models=models)),
 )
 
 

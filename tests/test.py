@@ -1,6 +1,13 @@
 import pytest
+from . import app
+from .models import Thing
 
 
 @pytest.mark.django_db
 def test(client):
-    assert client.get('/').status_code == 200
+    thing = Thing(name='Berlin')
+    thing.save()
+
+    r = client.get('/things/1')
+
+    assert r.status_code == 200
