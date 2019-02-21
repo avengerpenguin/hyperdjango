@@ -1,5 +1,4 @@
 import pytest
-from . import app
 from .models import Thing
 
 

@@ -10,7 +10,8 @@ setup(
     description='hyperdjango',
     url='http://github.com/avengerpenguin/hyperdjango',
     install_requires=[
-        'django', 'inflect', 'rdflib', 'rdflib-jsonld', 'flask_rdf', 'pyld', 'yarl',
+        'django', 'inflect', 'rdflib', 'rdflib-jsonld',
+        'flask_rdf', 'pyld', 'yarl',
     ],
     packages=['hyperdjango'],
 )

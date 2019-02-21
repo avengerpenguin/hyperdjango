@@ -1,8 +1,4 @@
-import os
 from django.conf import settings
-import django
-from django.conf.urls import url, re_path
-import hyperdjango
 
 
 def pytest_configure():
@@ -18,11 +14,10 @@ def pytest_configure():
             'tests',
         ],
         DEBUG=True,
-        DATABASES = {
+        DATABASES={
             'default': {
                 'ENGINE': 'django.db.backends.sqlite3',
                 'NAME': ':memory:',
             }
         },
     )
-    django.setup()
