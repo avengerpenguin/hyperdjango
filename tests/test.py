@@ -39,7 +39,7 @@ def test_object_changing_in_backend(client):
     thing.save()
 
     r = client.get('/things/1')
-    
+
     assert r.status_code == 200
     g = Graph()
     g.bind('test', Namespace('http://testserver/'))
