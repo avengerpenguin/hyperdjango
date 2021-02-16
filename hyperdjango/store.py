@@ -1,20 +1,20 @@
+from collections import defaultdict
 from importlib import import_module
-import yarl
+
 import django
 import rdflib
-from collections import defaultdict
-from rdflib import URIRef, RDF, Namespace
+import yarl
+from rdflib import RDF, Namespace, URIRef
 
 
-class LoggingMixIn(object):
-
+class LoggingMixIn:
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
     def __getattribute__(self, name):
         attr = super().__getattribute__(name)
         if callable(attr):
-            print('Called: {}'.format(attr))
+            print(f"Called: {attr}")
         return attr
 
 
@@ -30,7 +30,7 @@ class HyperdjangoStore(rdflib.store.Store):
         base = Namespace(context.identifier)
         s, p, o = t
         if not s:
-            raise Exception('Inefficient')
+            raise Exception("Inefficient")
         else:
             model_id = self._get_model(s)
             if model_id:
@@ -41,12 +41,15 @@ class HyperdjangoStore(rdflib.store.Store):
                     return []
 
                 uri = URIRef(yarl.URL(s).path)
-                yield (uri, rdflib.RDF.type, base['/' + model.__name__]), None
+                yield (uri, rdflib.RDF.type, base["/" + model.__name__]), None
 
                 for prop in obj.__dict__:
-                    if prop not in ['_state', 'id']:
-                        yield (uri, base['/' + prop],
-                               rdflib.Literal(getattr(obj, prop))), None
+                    if prop not in ["_state", "id"]:
+                        yield (
+                            uri,
+                            base["/" + prop],
+                            rdflib.Literal(getattr(obj, prop)),
+                        ), None
 
     def addN(self, quads):
         data = defaultdict(dict)
@@ -64,7 +67,7 @@ class HyperdjangoStore(rdflib.store.Store):
                     obj = model(pk=pk)
 
                 for p, o in data[s].items():
-                    prop = p.split('/')[-1]
+                    prop = p.split("/")[-1]
                     setattr(obj, prop, o.toPython())
 
                 obj.save()
@@ -72,7 +75,7 @@ class HyperdjangoStore(rdflib.store.Store):
     def remove(self, t, context=None):
         s, p, o = t
         if not s:
-            raise Exception('Inefficient')
+            raise Exception("Inefficient")
         else:
             model_id = self._get_model(s)
             if model_id:

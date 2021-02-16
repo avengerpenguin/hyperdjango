@@ -15,11 +15,11 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, re_path
-import hyperdjango
 from dyli import models
 
+import hyperdjango
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    re_path('.*', hyperdjango.HyperView.as_view(models=models)),
+    path("admin/", admin.site.urls),
+    re_path(".*", hyperdjango.HyperView.as_view(models=models)),
 ]

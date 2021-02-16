@@ -1,4 +1,5 @@
 from django.db import models
+
 from hyperdjango.models import HyperModel
 
 
