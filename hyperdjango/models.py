@@ -1,12 +1,12 @@
-from django.db import models
 import re
-import inflect
 
+import inflect
+from django.db import models
 
 p = inflect.engine()
 
 
-class classproperty(object):
+class classproperty:
     def __init__(self, f):
         self.f = f
 
@@ -20,5 +20,4 @@ class HyperModel(models.Model):
 
     @classproperty
     def uri_pattern(cls):
-        return re.compile(
-            '^/{}/([^/]+)$'.format(p.plural(cls.__name__.lower())))
+        return re.compile("^/{}/([^/]+)$".format(p.plural(cls.__name__.lower())))

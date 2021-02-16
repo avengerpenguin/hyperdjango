@@ -7,21 +7,25 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='Thing',
+            name="Thing",
             fields=[
-                ('id', models.AutoField(auto_created=True,
-                                        primary_key=True,
-                                        serialize=False,
-                                        verbose_name='ID')),
-                ('name', models.CharField(max_length=256)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=256)),
             ],
             options={
-                'abstract': False,
+                "abstract": False,
             },
         ),
     ]
