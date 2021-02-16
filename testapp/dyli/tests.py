@@ -27,7 +27,9 @@ def mock_requests_to_use_django_test_client(request, client):
     def put_callback(http_request, uri, headers):
 
         httpretty.disable()
-        r = client.put(uri, data=http_request.body, headers=dict(http_request.headers))
+        r = client.put(
+            uri, data=http_request.body, headers=dict(http_request.headers)
+        )
 
         response_headers = {
             "content-type": r.headers["Content-Type"],
