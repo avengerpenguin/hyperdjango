@@ -7,9 +7,9 @@ from .models import Thing
 
 def entity_from_response(r):
     g = Graph()
-    g.bind('test', Namespace('http://testserver/'))
-    g.parse(data=r.content, format=r['Content-Type'])
-    entity = ThingFactory(g)(Namespace('http://testserver/')['things/1'])
+    g.bind("test", Namespace("http://testserver/"))
+    g.parse(data=r.content, format=r["Content-Type"])
+    entity = ThingFactory(g)(Namespace("http://testserver/")["things/1"])
     return entity
 
 
@@ -46,4 +46,4 @@ def test_object_changing_in_backend(client):
     assert r.status_code == 200
     entity = entity_from_response(r)
 
-    assert 'Elephant' in entity.test_name
+    assert "Elephant" in entity.test_name
