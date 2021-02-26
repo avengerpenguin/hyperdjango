@@ -7,11 +7,6 @@ from pyld import jsonld
 from rdflib import Graph, URIRef
 from rdflib.plugin import register
 from rdflib.store import Store
-from flask_rdf.format import FormatSelector
-from pyld import jsonld
-import json
-from . import models
-
 
 FORMAT = FormatSelector()
 FORMAT.add_format("application/ld+json", "json-ld")

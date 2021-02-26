@@ -1,11 +1,11 @@
 import django
-import pytest
-from rdflib import Graph, Namespace
-from laconia import ThingFactory
-from .models import Thing
-from hypothesis import strategies, given, assume
 import inflect
+import pytest
+from hypothesis import assume, given, strategies
+from laconia import ThingFactory
+from rdflib import Graph, Namespace
 
+from .models import Thing
 
 p = inflect.engine()
 
@@ -23,7 +23,10 @@ def models(model_class):
         model.save()
         return model
 
-    return strategies.builds(make_model, **{f.name: gen_values(f) for f in model_class._meta.get_fields()})
+    return strategies.builds(
+        make_model,
+        **{f.name: gen_values(f) for f in model_class._meta.get_fields()}
+    )
 
 
 def entities(model_class):
@@ -32,12 +35,12 @@ def entities(model_class):
 
 def entity_from_response(r, rel_path):
     g = Graph()
-    g.bind('test', Namespace('http://testserver/'))
-    g.parse(data=r.content, format=r['Content-Type'])
+    g.bind("test", Namespace("http://testserver/"))
+    g.parse(data=r.content, format=r["Content-Type"])
 
     assert len(g) > 0
 
-    entity = ThingFactory(g)(Namespace('http://testserver/')[rel_path])
+    entity = ThingFactory(g)(Namespace("http://testserver/")[rel_path])
 
     return entity
 
@@ -48,11 +51,13 @@ def test_getting_object(client, thing):
     # Don't test for things with blank names just now
     assume(thing.name)
 
-    r = client.get('/things/{}'.format(thing.pk))
+    r = client.get(f"/things/{thing.pk}")
     assert r.status_code == 200
 
-    entity = entity_from_response(r, 'things/{}'.format(thing.pk))
-    assert {thing.name,} == set(entity.test_name)
+    entity = entity_from_response(r, f"things/{thing.pk}")
+    assert {
+        thing.name,
+    } == set(entity.test_name)
 
 
 @pytest.mark.django_db
