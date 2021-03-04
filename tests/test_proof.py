@@ -25,7 +25,7 @@ def models(model_class):
 
     return strategies.builds(
         make_model,
-        **{f.name: gen_values(f) for f in model_class._meta.get_fields()}
+        **{f.name: gen_values(f) for f in model_class._meta.get_fields()},
     )
 
 
