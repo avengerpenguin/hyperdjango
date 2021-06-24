@@ -5,3 +5,6 @@ __pycache__
 *.sqlite3
 *.egg-info
 .idea
+.tox
+.hypothesis
+/hyperdjango/_version.py

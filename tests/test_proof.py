@@ -1,13 +1,25 @@
 import django
 import inflect
 import pytest
+from django.test import Client
 from hypothesis import assume, given, strategies
 from laconia import ThingFactory
-from rdflib import Graph, Namespace
+from pytest_django.lazy_django import skip_if_no_django
+from rdflib import RDF, Graph, Namespace, URIRef
 
 from .models import Thing
 
 p = inflect.engine()
+
+
+@pytest.fixture(scope="session")
+def client():
+    """A Django test client instance."""
+    skip_if_no_django()
+
+    from django.test.client import Client
+
+    return Client()
 
 
 def gen_values(f):
@@ -30,13 +42,20 @@ def models(model_class):
 
 
 def entities(model_class):
-    return strategies.from_regex(model_class.uri_pattern().match)
+    return strategies.from_regex(model_class.uri_pattern)
 
 
 def entity_from_response(r, rel_path):
     g = Graph()
     g.bind("test", Namespace("http://testserver/"))
     g.parse(data=r.content, format=r["Content-Type"])
+    g.add(
+        (
+            URIRef("http://testserver/name"),
+            RDF.type,
+            URIRef("http://www.w3.org/2002/07/owl#FunctionalProperty"),
+        )
+    )
 
     assert len(g) > 0
 
@@ -47,7 +66,7 @@ def entity_from_response(r, rel_path):
 
 @given(models(Thing))
 @pytest.mark.django_db
-def test_getting_object(client, thing):
+def test_getting_object(client: Client, thing: Thing):
     # Don't test for things with blank names just now
     assume(thing.name)
 
@@ -55,13 +74,31 @@ def test_getting_object(client, thing):
     assert r.status_code == 200
 
     entity = entity_from_response(r, f"things/{thing.pk}")
-    assert {
-        thing.name,
-    } == set(entity.test_name)
+    assert entity.test_name == thing.name
 
 
+@given(models(Thing))
 @pytest.mark.django_db
-@given(entities(Thing))
-def test_putting_new_entity(client, uri):
-    r = client.put(uri)
-    assert r.status_code == 201
+def test_putting_new_entity(client: Client, thing: Thing):
+    assume(thing.name)
+
+    r = client.get(f"/things/{thing.pk}")
+    assert r.status_code == 200
+
+    entity = entity_from_response(r, f"things/{thing.pk}")
+    assert entity.test_name == thing.name
+
+    entity.test_name = "changed"
+
+    r = client.put(
+        f"/things/{thing.pk}",
+        data=entity._store.serialize(format="turtle"),
+        content_type="text/turtle",
+    )
+    assert r.status_code == 200
+
+    r = client.get(f"/things/{thing.pk}")
+    assert r.status_code == 200
+
+    entity = entity_from_response(r, f"things/{thing.pk}")
+    assert entity.test_name == "changed"
