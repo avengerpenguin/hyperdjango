@@ -1,10 +1,10 @@
 from django.core.validators import MinLengthValidator
 from django.db import models
 
-import hyperdjango
+from hyperdjango.models import HyperModel
 
 
-class Thing(hyperdjango.models.HyperModel):
+class Thing(HyperModel):
     name = models.CharField(max_length=256, validators=[MinLengthValidator(1)])
 
     def __repr__(self):

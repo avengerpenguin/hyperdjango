@@ -1,6 +1,7 @@
 import json
+import sys
 
-from django.http import HttpResponse
+from django.http import HttpRequest, HttpResponse
 from django.views.generic.base import View
 from flask_rdf.format import FormatSelector
 from pyld import jsonld
@@ -19,7 +20,7 @@ register("Hyperdjango", Store, "hyperdjango.store", "HyperdjangoStore")
 
 class HyperView(View):
 
-    models = None
+    models = sys.modules[__name__]
 
     def get(self, request, *args, **kwargs):
 
@@ -73,13 +74,14 @@ class HyperView(View):
 
         return HttpResponse(body, content_type=mimetype)
 
-    def put(self, request, *args, **kwargs):
+    def put(self, request: HttpRequest, *args, **kwargs):
+        if not request.content_type:
+            return HttpResponse(status=415)
+
         base_url = "http://" + request.get_host()
 
         update_graph = Graph()
-        update_graph.parse(
-            data=request.body, format=request.META["CONTENT_TYPE"]
-        )
+        update_graph.parse(data=request.body, format=request.content_type)
 
         graph = Graph("Hyperdjango", identifier=URIRef(base_url))
         graph.open(configuration=self.models.__name__)

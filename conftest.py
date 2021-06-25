@@ -9,6 +9,7 @@ def pytest_configure():
             "django.middleware.csrf.CsrfViewMiddleware",
             "django.middleware.clickjacking.XFrameOptionsMiddleware",
         ),
+        SECRET_KEY="abc123",
         INSTALLED_APPS=[
             "hyperdjango",
             "tests",
