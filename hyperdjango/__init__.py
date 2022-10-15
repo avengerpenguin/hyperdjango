@@ -19,11 +19,9 @@ register("Hyperdjango", Store, "hyperdjango.store", "HyperdjangoStore")
 
 
 class HyperView(View):
-
     models = sys.modules[__name__]
 
     def get(self, request, *args, **kwargs):
-
         base_url = "http://" + request.get_host()
 
         graph = Graph("Hyperdjango", identifier=URIRef(base_url))
@@ -53,7 +51,7 @@ class HyperView(View):
             g.context_aware,
         )
 
-        body = g.serialize(format=rdf_format, publicID=base_url).decode("utf8")
+        body = g.serialize(format=rdf_format, publicID=base_url)
 
         if rdf_format == "json-ld":
             body = json.dumps(
@@ -100,7 +98,7 @@ class HyperView(View):
             """
         INSERT DATA {
         """
-            + update_graph.serialize(format="nt").decode("utf8")
+            + update_graph.serialize(format="nt")
             + """
         }
         """,

@@ -47,7 +47,6 @@ def entities(model_class):
 
 def entity_from_response(r, rel_path):
     g = Graph()
-    g.bind("test", Namespace("http://testserver/"))
     g.parse(data=r.content, format=r["Content-Type"])
     g.add(
         (
@@ -56,6 +55,7 @@ def entity_from_response(r, rel_path):
             URIRef("http://www.w3.org/2002/07/owl#FunctionalProperty"),
         )
     )
+    g.bind("test", Namespace("http://testserver/"))
 
     assert len(g) > 0
 
