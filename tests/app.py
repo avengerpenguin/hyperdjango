@@ -1,5 +1,5 @@
-from django.conf.urls import re_path
 from django.core.wsgi import get_wsgi_application
+from django.urls import re_path
 
 import hyperdjango
 

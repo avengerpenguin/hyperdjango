@@ -7,8 +7,8 @@ from .models import Thing
 
 def entity_from_response(r):
     g = Graph()
-    g.bind("test", Namespace("http://testserver/"))
     g.parse(data=r.content, format=r["Content-Type"])
+    g.bind("test", Namespace("http://testserver/"))
     entity = ThingFactory(g)(Namespace("http://testserver/")["things/1"])
     return entity
 

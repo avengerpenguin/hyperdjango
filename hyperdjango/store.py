@@ -19,7 +19,6 @@ class LoggingMixIn:
 
 
 class HyperdjangoStore(rdflib.store.Store):
-
     models = None
 
     def open(self, configuration, _):

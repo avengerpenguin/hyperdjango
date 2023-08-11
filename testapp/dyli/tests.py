@@ -11,7 +11,6 @@ from .models import Thing
 @pytest.fixture(autouse=False, scope="function")
 def mock_requests_to_use_django_test_client(request, client):
     def get_callback(http_request, uri, headers):
-
         httpretty.disable()
         r = client.get(uri, headers=dict(http_request.headers))
 
@@ -25,7 +24,6 @@ def mock_requests_to_use_django_test_client(request, client):
         return int(r.status_code), response_headers, r.data
 
     def put_callback(http_request, uri, headers):
-
         httpretty.disable()
         r = client.put(
             uri, data=http_request.body, headers=dict(http_request.headers)
